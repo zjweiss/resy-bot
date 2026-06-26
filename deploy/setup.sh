@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/REPLACE_ME/resy-bot.git}"
+REPO_URL="${REPO_URL:-https://github.com/zjweiss/resy-bot.git}"
 APP_DIR="/opt/resy-bot"
 SERVICE_USER="resy"
 
