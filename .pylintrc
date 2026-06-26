@@ -1,0 +1,7 @@
+[MAIN]
+# Long-running loops (sniper/watcher poll forever; webhook posts are
+# best-effort) intentionally swallow unexpected exceptions so one bad poll or
+# notification never tears down the process — see the inline reasons.
+disable =
+    too-many-instance-attributes,
+    broad-exception-caught

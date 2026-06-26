@@ -57,6 +57,44 @@ python -m resy_bot run --mode watch    # just the watchlist poller
 Set `RESY_BOT_WEBHOOK` to a Slack/Discord incoming-webhook URL to get a ping
 when a booking lands.
 
+## Deploy free on Google Cloud (always-on)
+
+GCP's **Always Free** tier includes one `e2-micro` VM, which runs the sniper +
+watcher 24/7 for $0.
+
+1. **Create the VM** (free tier requires one of these three regions):
+
+   ```bash
+   gcloud compute instances create resy-bot \
+     --machine-type=e2-micro \
+     --zone=us-east1-b \
+     --image-family=debian-12 --image-project=debian-cloud \
+     --boot-disk-size=10GB
+   ```
+
+   Use `us-east1` — it's the closest free region to Resy's servers, which
+   matters for winning drops.
+
+2. **Provision it.** SSH in (`gcloud compute ssh resy-bot --zone=us-east1-b`),
+   then either clone the repo and run `sudo bash deploy/setup.sh`, or set
+   `REPO_URL` first. The script installs deps, creates a `resy` service user,
+   and registers the systemd unit ([deploy/resy-bot.service](deploy/resy-bot.service)).
+
+3. **Configure & start** (the script prints these exact commands):
+
+   ```bash
+   sudo -u resy cp /opt/resy-bot/config.example.yaml /opt/resy-bot/config.yaml
+   sudo -u resy nano /opt/resy-bot/config.yaml          # creds + targets
+   sudo -u resy /opt/resy-bot/.venv/bin/python -m resy_bot whoami --config /opt/resy-bot/config.yaml
+   sudo systemctl start resy-bot
+   journalctl -u resy-bot -f                            # live logs
+   ```
+
+The VM's clock is UTC, but drop times use each target's `timezone` from the
+config, so leave that set to the restaurant's local zone (e.g.
+`America/New_York`). Keep `dry_run: true` until the logs show it matching the
+slots you expect, then set it to `false` and `sudo systemctl restart resy-bot`.
+
 ## How matching works
 
 For each target you give `preferred_times` (ranked), an optional hard
@@ -75,4 +113,6 @@ your preferred list. See [resy_bot/matching.py](resy_bot/matching.py).
 | [sniper.py](resy_bot/sniper.py) | wait for drop, burst-poll, book |
 | [watcher.py](resy_bot/watcher.py) | poll for cancellations on a fixed date |
 | [__main__.py](resy_bot/__main__.py) | CLI (`run`, `whoami`) |
+| [deploy/setup.sh](deploy/setup.sh) | one-shot VM provisioning script |
+| [deploy/resy-bot.service](deploy/resy-bot.service) | systemd unit (restartable, hardened) |
 ```
