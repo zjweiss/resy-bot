@@ -50,8 +50,8 @@ cat <<EOF
   1. Create your config:
        sudo -u $SERVICE_USER cp $APP_DIR/config.example.yaml $APP_DIR/config.yaml
        sudo -u $SERVICE_USER nano $APP_DIR/config.yaml      # add api_key, auth_token, etc.
-  2. Verify credentials:
-       sudo -u $SERVICE_USER $APP_DIR/.venv/bin/python -m resy_bot whoami --config $APP_DIR/config.yaml
+  2. Verify credentials (run from $APP_DIR so the package is importable):
+       cd $APP_DIR && sudo -u $SERVICE_USER $APP_DIR/.venv/bin/python -m resy_bot whoami
   3. Start it (leave dry_run: true in the config until you trust it):
        sudo systemctl start resy-bot
   4. Watch the logs live:

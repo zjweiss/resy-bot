@@ -83,9 +83,10 @@ watcher 24/7 for $0.
 3. **Configure & start** (the script prints these exact commands):
 
    ```bash
-   sudo -u resy cp /opt/resy-bot/config.example.yaml /opt/resy-bot/config.yaml
-   sudo -u resy nano /opt/resy-bot/config.yaml          # creds + targets
-   sudo -u resy /opt/resy-bot/.venv/bin/python -m resy_bot whoami --config /opt/resy-bot/config.yaml
+   cd /opt/resy-bot
+   sudo -u resy cp config.example.yaml config.yaml
+   sudo -u resy nano config.yaml                        # creds + targets
+   sudo -u resy .venv/bin/python -m resy_bot whoami     # run from /opt/resy-bot
    sudo systemctl start resy-bot
    journalctl -u resy-bot -f                            # live logs
    ```
