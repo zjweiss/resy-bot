@@ -1,0 +1,49 @@
+# Resy bot configuration.
+# Copy this to config.yaml and fill in your own values.
+#
+# How to get your credentials (from a logged-in resy.com browser session):
+#   1. Open DevTools -> Network tab, reload resy.com.
+#   2. Find any request to api.resy.com.
+#   3. api_key      -> Request header "Authorization: ResyAPI api_key=\"<THIS>\""
+#      auth_token   -> Request header "X-Resy-Auth-Token: <THIS>"
+#   4. payment_method_id -> hit GET https://api.resy.com/2/user with the same
+#      headers; it's under payment_methods[].id. (Required to actually book.)
+
+resy:
+  api_key: "YOUR_RESY_API_KEY"
+  auth_token: "YOUR_RESY_AUTH_TOKEN"
+  payment_method_id: 0          # integer id of your saved card
+  # Set to true to find/log matching slots but NOT actually book them.
+  dry_run: true
+
+# Applied to any reservation that doesn't override them.
+defaults:
+  party_size: 2
+  timezone: "America/New_York"  # local tz of the restaurants / drop times
+
+# --- DROP SNIPER ---
+# Restaurants that release tables at a known time. The bot wakes a few seconds
+# early, then hammers /find the instant the drop lands and books the best match.
+snipe:
+  - name: "Tatiana"
+    venue_id: 0                 # numeric Resy venue id (see README to find it)
+    party_size: 2
+    drop_time: "09:00"          # local clock time the tables drop
+    drop_days_ahead: 14         # the reservation date == drop date + this many days
+    # date: "2026-07-15"        # ...or pin an exact date instead of drop_days_ahead
+    preferred_times: ["19:00", "19:30", "20:00", "18:30"]  # ranked; first match wins
+    time_window: ["18:00", "21:00"]    # only consider slots in this window
+    table_types: []             # e.g. ["Dining Room"]; empty = any table type
+
+# --- WATCHLIST ---
+# Restaurants you want a table at on a fixed date. The bot polls for openings
+# (cancellations) and grabs the best matching slot the moment one appears.
+watchlist:
+  - name: "4 Charles Prime Rib"
+    venue_id: 0
+    party_size: 2
+    date: "2026-07-04"
+    preferred_times: ["19:00", "19:30", "20:00"]
+    time_window: ["18:00", "21:30"]
+    table_types: []
+    poll_interval: 15           # seconds between polls for this entry
