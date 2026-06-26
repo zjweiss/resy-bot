@@ -38,6 +38,7 @@ class Slot:
 
     @classmethod
     def from_api(cls, raw: dict) -> "Slot":
+        """Build a Slot from one entry of the /4/find slots array."""
         config = raw.get("config", {})
         return cls(
             config_token=config.get("token", ""),
@@ -51,6 +52,8 @@ class BookingError(RuntimeError):
 
 
 class ResyClient:
+    """Async wrapper over the Resy HTTP endpoints used for booking."""
+
     def __init__(
         self,
         api_key: str,
@@ -86,6 +89,7 @@ class ResyClient:
         }
 
     async def aclose(self) -> None:
+        """Close the underlying HTTP connection pool."""
         await self._client.aclose()
 
     async def __aenter__(self) -> "ResyClient":

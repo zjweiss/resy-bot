@@ -18,6 +18,7 @@ log = logging.getLogger("resy_bot.watcher")
 
 
 async def watch_one(client: ResyClient, target: Target, *, dry_run: bool) -> None:
+    """Poll a single target until a matching slot is booked (or forever in dry-run)."""
     day = target.resolved_date()
     log.info(
         "Watching %s on %s (party %d, every %.0fs)",
@@ -42,6 +43,7 @@ async def watch_one(client: ResyClient, target: Target, *, dry_run: bool) -> Non
 
 
 async def run_watcher(client: ResyClient, targets: list[Target], *, dry_run: bool):
+    """Watch every configured watchlist target concurrently."""
     if not targets:
         return
     await asyncio.gather(

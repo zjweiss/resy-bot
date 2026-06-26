@@ -20,6 +20,8 @@ def _parse_time(value: str) -> time:
 
 @dataclass
 class ResyAuth:
+    """Resy API credentials and global booking behavior."""
+
     api_key: str
     auth_token: str
     payment_method_id: int = 0
@@ -50,6 +52,7 @@ class Target:
 
     @property
     def tz(self) -> ZoneInfo:
+        """The venue-local timezone as a ZoneInfo."""
         return ZoneInfo(self.timezone)
 
     def resolved_date(self, now: datetime | None = None) -> date_cls:
@@ -77,12 +80,15 @@ class Target:
 
 @dataclass
 class Config:
+    """Top-level parsed config: credentials plus snipe and watch targets."""
+
     auth: ResyAuth
     snipe: list[Target] = field(default_factory=list)
     watchlist: list[Target] = field(default_factory=list)
 
 
 def _build_target(raw: dict, defaults: dict) -> Target:
+    """Construct a Target from a raw config dict, applying global defaults."""
     party_size = raw.get("party_size", defaults.get("party_size", 2))
     timezone = raw.get("timezone", defaults.get("timezone", "America/New_York"))
 
@@ -114,8 +120,9 @@ def _build_target(raw: dict, defaults: dict) -> Target:
 
 
 def load_config(path: str | Path) -> Config:
+    """Load and parse the YAML config file into a Config object."""
     path = Path(path)
-    with path.open() as fh:
+    with path.open(encoding="utf-8") as fh:
         raw = yaml.safe_load(fh)
 
     resy = raw.get("resy", {})

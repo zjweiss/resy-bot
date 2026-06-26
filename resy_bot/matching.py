@@ -18,16 +18,15 @@ def _clock_to_time(clock: str) -> time | None:
 
 def _eligible(slot: Slot, target: Target) -> bool:
     """Does this slot satisfy the target's hard constraints?"""
-    if target.table_types:
-        if slot.table_type not in target.table_types:
-            return False
+    if target.table_types and slot.table_type not in target.table_types:
+        return False
 
     if target.time_window is not None:
         t = _clock_to_time(slot.clock)
         if t is None:
             return False
         lo, hi = target.time_window
-        if not (lo <= t <= hi):
+        if not lo <= t <= hi:
             return False
 
     return True

@@ -16,6 +16,7 @@ WEBHOOK_URL = os.environ.get("RESY_BOT_WEBHOOK")
 
 
 async def announce(attempt: Attempt) -> None:
+    """Log a booking result and, on success, post to the webhook if configured."""
     if attempt.booked:
         msg = (
             f"✅ BOOKED {attempt.target.name} @ {attempt.slot_time} "

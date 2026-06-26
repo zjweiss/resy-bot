@@ -67,6 +67,7 @@ async def _cmd_whoami(args) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Parse arguments and dispatch to the requested subcommand."""
     parser = argparse.ArgumentParser(prog="resy_bot", description="Resy reservation bot")
     parser.add_argument("--config", default="config.yaml", help="path to config YAML")
     parser.add_argument("-v", "--verbose", action="store_true", help="debug logging")

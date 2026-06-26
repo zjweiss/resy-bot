@@ -15,6 +15,8 @@ log = logging.getLogger("resy_bot.booking")
 
 @dataclass
 class Attempt:
+    """The outcome of one find -> choose -> book attempt for a target."""
+
     target: Target
     booked: bool
     slot_time: str | None = None
