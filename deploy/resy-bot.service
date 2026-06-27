@@ -2,6 +2,9 @@
 Description=Resy bot (drop sniper + watchlist poller)
 After=network-online.target
 Wants=network-online.target
+# Don't thrash if it crash-loops (e.g. bad creds).
+StartLimitIntervalSec=300
+StartLimitBurst=10
 
 [Service]
 Type=simple
@@ -12,9 +15,6 @@ Environment=RESY_BOT_WEBHOOK=
 ExecStart=/opt/resy-bot/.venv/bin/python -m resy_bot run --mode both
 Restart=always
 RestartSec=5
-# Don't thrash if it crash-loops (e.g. bad creds).
-StartLimitIntervalSec=300
-StartLimitBurst=10
 
 # Light hardening.
 NoNewPrivileges=true
